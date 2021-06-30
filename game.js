@@ -31,7 +31,7 @@ const LEVEL_IMG = new Image();
 LEVEL_IMG.src = "img/level.png";
 
 const LIFE_IMG = new Image();
-LIFE_IMG.src = "img/ball.png";
+LIFE_IMG.src = "img/life.png";
 
 const SCORE_IMG = new Image();
 SCORE_IMG.src = "img/score.png";
@@ -71,7 +71,7 @@ let paddle = {
   y: canvas.height - PADDLE_MARGIN_BOTTOM - PADDLE_HEIGHT,
   width: PADDLE_WIDTH,
   height: PADDLE_HEIGHT,
-  dx: 5,
+  dx: 10,
 };
 
 let ball = {
@@ -426,6 +426,14 @@ const normalBrick = {
 
 let bricks = [];
 
+const colors = [
+  "#ffffff",
+  "#ffffff",
+  "#4CEFFF",
+  "#029EFF",
+  "#35A7B2",
+  "#0E2F31",
+];
 //levels
 const level1 = [
   [3, 3, 3, 3, 3],
@@ -680,7 +688,8 @@ soundElement.addEventListener("click", audioManager);
 function audioManager() {
   // CHANGE IMAGE SOUND_ON/OFF
   let imgSrc = soundElement.getAttribute("src");
-  let SOUND_IMG = imgSrc == "img/music.png" ? "img/mute.png" : "img/music.png";
+  let SOUND_IMG =
+    imgSrc == "img/SOUND_ON.png" ? "img/SOUND_OFF.png" : "img/SOUND_ON.png";
 
   soundElement.setAttribute("src", SOUND_IMG);
 
@@ -737,19 +746,3 @@ document.addEventListener("keyup", function (event) {
     rightArrow = false;
   }
 });
-
-// document.addEventListener("mousemove", function (event) {
-//   if (event.clientX + paddle.width > 200 && event.clientX < canvas.width)
-//     movePaddleWithMouse(event.clientX);
-// });
-
-// // MOVE PADDLE
-// function movePaddleWithMouse(changeX) {
-//   if (paddle.x >= 0 && paddle.x + paddle.width <= canvas.width) {
-//     paddle.x = changeX - paddle.width;
-//   } else if (paddle.x <= 0) {
-//     paddle.x = 1;
-//   } else if (paddle.x + paddle.width >= canvas.width) {
-//     paddle.x = canvas.width - paddle.width;
-//   }
-// }
