@@ -87,6 +87,7 @@ let powerUp1 = {
   x: canvas.width / 4 - POWER_UP_RADIUS / 2,
   y: paddle.y - canvas.width / 4,
   radius: POWER_UP_RADIUS,
+  status: true,
   speed: 1,
   dx: 0,
   dy: 1,
@@ -96,21 +97,60 @@ let powerUp2 = {
   x: (5 * canvas.width) / 6 - POWER_UP_RADIUS / 2,
   y: paddle.y - canvas.width / 4,
   radius: 30,
+  status: false,
   speed: 1,
   dx: 0,
   dy: 1,
 };
 
-function drawPowerUp1() {
-  const ballImage = new Image();
-  ballImage.src = "./img/powerUp1.png";
-  canvasContext.drawImage(
-    ballImage,
-    powerUp1.x,
-    powerUp1.y,
-    powerUp1.radius,
-    powerUp1.radius
-  );
+const powerUpsOrg = [
+  {
+    x: canvas.width / 4 - POWER_UP_RADIUS / 2,
+    y: paddle.y - canvas.width / 4,
+    radius: POWER_UP_RADIUS,
+    src: "./img/powerUp1.png",
+    status: true,
+    speed: 1,
+    dx: 0,
+    dy: 1,
+  },
+  {
+    x: (5 * canvas.width) / 6 - POWER_UP_RADIUS / 2,
+    y: paddle.y - canvas.width / 4,
+    radius: 30,
+    src: "./img/ball.png",
+    status: false,
+    speed: 1,
+    dx: 0,
+    dy: 1,
+  },
+];
+
+let powerUps = JSON.parse(JSON.stringify(powerUpsOrg));
+
+powerUps[0].radius = 400;
+
+console.log(powerUps);
+console.log(powerUpsOrg);
+
+let powerUp = null;
+
+function drawPowerUp() {
+  // if (powerUp === null) {
+  //   powerUps = JSON.parse(JSON.stringify(powerUpsOrg));
+  //   powerUp = powerUps[Math.floor(Math.random() * 2)];
+  // }
+  if (powerUp) {
+    const powerUpImg = new Image();
+    powerUpImg.src = powerUp.src;
+    canvasContext.drawImage(
+      powerUpImg,
+      powerUp.x,
+      powerUp.y,
+      powerUp.radius,
+      powerUp.radius
+    );
+  }
 }
 
 function drawPowerUp2() {
@@ -125,9 +165,11 @@ function drawPowerUp2() {
   );
 }
 
-function movePowerUp1() {
-  powerUp1.x += powerUp1.dx;
-  powerUp1.y += powerUp1.dy;
+function movePowerUp() {
+  if (powerUp) {
+    powerUp.x += powerUp.dx;
+    powerUp.y += powerUp.dy;
+  }
 }
 
 function movePowerUp2() {
@@ -213,38 +255,94 @@ function ballPaddleCollision() {
 }
 
 // POWERUP1 AND PADDLE COLLISION
-function powerUp1Collision() {
-  if (powerUp1.y > paddle.y + paddle.height) {
-    powerUp1.x = -1111100;
-    powerUp1.y = -11111100;
-  } else if (
-    powerUp1.x < paddle.x + paddle.width &&
-    powerUp1.x > paddle.x &&
-    paddle.y < paddle.y + paddle.height &&
-    powerUp1.y > paddle.y
-  ) {
-    PADDLE_HIT.play();
+// function powerUpCollision() {
+//   if (powerUp.status) {
+//     if (powerUp.y > paddle.y + paddle.height) {
+//       console.log(powerUp.y, paddle.y + paddle.height);
+//       powerUp.x = -1111100;
+//       powerUp.y = -11111100;
+//     } else if (
+//       powerUp.x < paddle.x + paddle.width &&
+//       powerUp.x > paddle.x &&
+//       paddle.y <= paddle.y + paddle.height &&
+//       powerUp.y >= paddle.y
+//     ) {
+//       PADDLE_HIT.play();
+//       console.log(powerUp.y, paddle.y + paddle.height);
+//       PADDLE_WIDTH = 180;
+//       paddle.width = 180;
+//       powerUp.x = -1111000;
+//       powerUp.y = -1111000;
+//       powerUp.dx = 0;
+//       powerUp.dy = 0;
 
-    // CHECK WHERE THE BALL HIT THE PADDLE
-    let collidePoint = powerUp1.x - (paddle.x + paddle.width / 2);
+//       setTimeout(() => {
+//         PADDLE_WIDTH = 120;
+//         paddle.width = 120;
+//       }, 5000);
+//     }
+//   } else if (!powerUp.status) {
+//     if (powerUp.y > paddle.y + paddle.height) {
+//       powerUp.x = -1111100;
+//       powerUp.y = -11111100;
+//     } else if (
+//       powerUp.x < paddle.x + paddle.width &&
+//       powerUp.x > paddle.x &&
+//       paddle.y < paddle.y + paddle.height &&
+//       powerUp.y > paddle.y
+//     ) {
+//       PADDLE_HIT.play();
 
-    // NORMALIZE THE VALUES
-    collidePoint = collidePoint / (paddle.width / 2);
+//       BALL_RADIUS = 25;
+//       ball.radius = 25;
+//       powerUp.x = -11100;
+//       powerUp.y = -111100;
+//       powerUp.dx = 0;
+//       powerUp.dy = 0;
 
-    // CALCULATE THE ANGLE OF THE BALL
-    let angle = (collidePoint * Math.PI) / 3;
+//       setTimeout(() => {
+//         BALL_RADIUS = 15;
+//         ball.radius = 15;
+//       }, 5000);
+//     }
+//   }
+// }
 
-    PADDLE_WIDTH = 180;
-    paddle.width = 180;
-    powerUp1.x = -1111000;
-    powerUp1.y = -1111000;
-    powerUp1.dx = 0;
-    powerUp1.dy = 0;
+function powerUpCollision() {
+  if (powerUp) {
+    if (powerUp.y > paddle.y + paddle.height) {
+      console.log(powerUp.y, paddle.y + paddle.height);
+      powerUp.x = -1111100;
+      powerUp.y = -11111100;
+    } else if (
+      powerUp.x < paddle.x + paddle.width &&
+      powerUp.x > paddle.x &&
+      paddle.y <= paddle.y + paddle.height &&
+      powerUp.y >= paddle.y
+    ) {
+      PADDLE_HIT.play();
+      if (powerUp.status) {
+        PADDLE_WIDTH = 180;
+        paddle.width = 180;
+      } else {
+        BALL_RADIUS = 25;
+        ball.radius = 25;
+      }
+      powerUp.x = -1111000;
+      powerUp.y = -1111000;
+      powerUp.dx = 0;
+      powerUp.dy = 0;
 
-    setTimeout(() => {
-      PADDLE_WIDTH = 120;
-      paddle.width = 120;
-    }, 5000);
+      setTimeout(() => {
+        if (powerUp.status) {
+          PADDLE_WIDTH = 120;
+          paddle.width = 120;
+        } else {
+          BALL_RADIUS = 15;
+          ball.radius = 15;
+        }
+      }, 5000);
+    }
   }
 }
 
@@ -276,8 +374,6 @@ function powerUp2Collision() {
     powerUp2.y = -111100;
     powerUp2.dx = 0;
     powerUp2.dy = 0;
-
-    console.log(BALL_RADIUS);
 
     setTimeout(() => {
       BALL_RADIUS = 15;
@@ -526,24 +622,28 @@ function gameOver() {
 function update() {
   movePaddle();
   moveBall();
-  if (SCORE >= 150 && SCORE <= 200) movePowerUp2();
-  else if (SCORE >= 75 && SCORE <= 125) movePowerUp1();
+  movePowerUp();
   ballWallCollision();
   ballPaddleCollision();
   ballBrickCollision();
-  powerUp1Collision();
-  powerUp2Collision();
+  powerUpCollision();
   gameOver();
   levelUp();
   GAME_SONG.play();
 }
 
+let lastScr = 0;
+
 function draw() {
   drawPaddle();
   drawBall();
   drawBricks();
-  if (SCORE >= 150 && SCORE <= 200) drawPowerUp2();
-  else if (SCORE >= 75 && SCORE <= 125) drawPowerUp1();
+  if (Math.floor(SCORE / 50) > lastScr) {
+    powerUps = JSON.parse(JSON.stringify(powerUpsOrg));
+    powerUp = powerUps[Math.floor(Math.random() * 2)];
+    lastScr = Math.floor(SCORE / 50);
+  }
+  drawPowerUp();
   showGameStats(SCORE, 35, 25, SCORE_IMG, 5, 5);
   showGameStats(LIFE, canvas.width - 25, 25, LIFE_IMG, canvas.width - 55, 5);
   showGameStats(
