@@ -14,7 +14,7 @@ const POWER_UP_RADIUS = 30;
 
 let isPaused = true;
 
-let LIFE = 3; // PLAYER HAS 3 LIVES
+let LIFE = 8; // PLAYER HAS 3 LIVES
 let SCORE = 0;
 const SCORE_UNIT = 10;
 let LEVEL = 1;
@@ -31,7 +31,7 @@ const LEVEL_IMG = new Image();
 LEVEL_IMG.src = "img/level.png";
 
 const LIFE_IMG = new Image();
-LIFE_IMG.src = "img/life.png";
+LIFE_IMG.src = "img/ball.png";
 
 const SCORE_IMG = new Image();
 SCORE_IMG.src = "img/score.png";
@@ -426,14 +426,6 @@ const normalBrick = {
 
 let bricks = [];
 
-const colors = [
-  "#ffffff",
-  "#ffffff",
-  "#4CEFFF",
-  "#029EFF",
-  "#35A7B2",
-  "#0E2F31",
-];
 //levels
 const level1 = [
   [3, 3, 3, 3, 3],
@@ -688,8 +680,7 @@ soundElement.addEventListener("click", audioManager);
 function audioManager() {
   // CHANGE IMAGE SOUND_ON/OFF
   let imgSrc = soundElement.getAttribute("src");
-  let SOUND_IMG =
-    imgSrc == "img/SOUND_ON.png" ? "img/SOUND_OFF.png" : "img/SOUND_ON.png";
+  let SOUND_IMG = imgSrc == "img/music.png" ? "img/mute.png" : "img/music.png";
 
   soundElement.setAttribute("src", SOUND_IMG);
 
